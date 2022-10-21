@@ -1,0 +1,15 @@
+#Enable naxsi
+SecRulesEnabled;
+#LibInjectionSql;
+#Enable learning mode
+#LearningMode;
+#Define where blocked requests go
+DeniedUrl "/50x.html";
+#CheckRules, determining when naxsi needs to take action
+CheckRule "$SQL >= 4" BLOCK;
+CheckRule "$RFI >= 8" BLOCK;
+CheckRule "$TRAVERSAL >= 4" BLOCK;
+CheckRule "$EVADE >= 4" BLOCK;
+CheckRule "$XSS >= 8" BLOCK;
+#naxsi logs
+error_log /var/log/nginx/waf.log;

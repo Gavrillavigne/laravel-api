@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: docker/nginx
+    container_name: api_nginx
+    volumes:
+      - ./:/var/www/api
+      - ./logs/nginx:/var/log/nginx
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - '${INTERFACE}:${HTTP_PORT_MACHINE}:${HTTP_PORT_DOCKER}'
+      - '${INTERFACE}:${HTTPS_PORT_MACHINE}:${HTTPS_PORT_DOCKER}'
+    depends_on:
+      - php
+    networks:
+      - api
+    restart: unless-stopped
+  php:
+    build: docker/php
+    container_name: api_php
+    volumes:
+      - ./:/var/www/api
+      - ./docker/php/conf.d:/usr/local/etc/php/conf.d
+    ports:
+      - '${INTERFACE}:${UPSTREAM_PORT_MACHINE}:${UPSTREAM_PORT_DOCKER}'
+    networks:
+      - api
+    environment:
+      PHP_IDE_CONFIG: ${PHP_IDE_CONFIG}
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  mysql:
+    build: docker/mysql
+    container_name: api_mysql
+    volumes:
+      - ./var/mysql:/var/lib/mysql
+    ports:
+      - '${INTERFACE}:${MYSQL_PORT_MACHINE}:${MYSQL_PORT_DOCKER}'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - api
+    restart: unless-stopped
+
+networks:
+  api:
+    name: api
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.243.0/28
