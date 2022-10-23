@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\RegisterController;
+use App\Http\Controllers\Api\V1\ReviewsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,5 +17,8 @@ use App\Http\Controllers\Api\V1\RegisterController;
 
 Route::post('register', [RegisterController::class, 'register']);
 Route::middleware('auth:api')->group(function () {
-    //
+    Route::prefix('reviews')->group(function () {
+        Route::get('/', [ReviewsController::class, 'getReviews']); // просмотр пагинированного списка отзывов с ответами
+        Route::post('/', [ReviewsController::class, 'addReview']); // добавление отзыва
+    });
 });
