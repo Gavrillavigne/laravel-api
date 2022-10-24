@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\RegisterController;
+use App\Http\Controllers\Api\V1\SignController;
 use App\Http\Controllers\Api\V1\ReviewsController;
 
 /*
@@ -15,7 +15,8 @@ use App\Http\Controllers\Api\V1\ReviewsController;
 |
 */
 
-Route::post('register', [RegisterController::class, 'register']);
+Route::post('auth/signup', [SignController::class, 'signUp']);
+Route::post('auth/signin', [SignController::class, 'signIn']);
 Route::middleware('auth:api')->group(function () {
     Route::prefix('reviews')->group(function () {
         Route::get('/', [ReviewsController::class, 'getReviews']); // просмотр пагинированного списка отзывов с ответами
