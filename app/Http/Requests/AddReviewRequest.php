@@ -32,7 +32,7 @@ class AddReviewRequest extends ApiRequest
         return [
             'parent_id.int' => 'parent_id id should be integer',
             'user_id.int' => 'user_id should be integer',
-            'text.string' => 'Name should be string!',
+            'text.string' => 'text should be string!',
             'approved.in' => 'approved should be in' . Review::STATUS_ACTIVE . ',' . Review::STATUS_INACTIVE,
             'is_viewed.in' => 'is_viewed should be in' . Review::STATUS_ACTIVE . ',' . Review::STATUS_INACTIVE
         ];
